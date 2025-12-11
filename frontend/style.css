@@ -1,0 +1,171 @@
+/* 全局样式 - 舒展布局 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Microsoft YaHei", sans-serif;
+}
+
+body {
+    background-color: #fff;
+    padding: 30px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 标题区域 */
+.header {
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 品牌筛选栏 */
+.brand-group {
+    margin-bottom: 15px;
+}
+
+.brand-btn {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    color: #333;
+    cursor: pointer;
+    margin-right: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.brand-btn.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+/* 搜索区域 */
+.search-group {
+    margin-bottom: 15px;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    width: 220px;
+    margin-right: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.model-select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    margin-right: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    width: 180px;
+}
+
+.query-btn {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.query-btn:hover {
+    background-color: #e9ecef;
+}
+
+/* 价格区间推荐 */
+.price-group {
+    margin-bottom: 20px;
+}
+
+.price-label {
+    font-size: 14px;
+    color: #dc3545;
+    margin-right: 10px;
+}
+
+.price-btn-group {
+    display: inline-block;
+}
+
+.price-btn {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    color: #333;
+    cursor: pointer;
+    margin-right: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.price-btn.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+/* 相机数据展示区 */
+.camera-area {
+    padding: 15px 0;
+}
+
+.camera-icon {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.camera-list {
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(100% - 50px);
+}
+
+.camera-card {
+    display: inline-block;
+    width: 130px;
+    padding: 10px;
+    border: 1px solid #eee;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.camera-name {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.camera-price {
+    font-size: 12px;
+    color: #666;
+}
+
+.empty-tip {
+    font-size: 14px;
+    color: #999;
+    padding: 20px 0;
+}

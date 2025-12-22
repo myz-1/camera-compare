@@ -3,64 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>相机价格推荐系统</title>
+    <title>相机机身价格对比 - 京东风格</title>
+    <!-- 京东风格图标 + 消除404 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2290%22 font-size=%2290%22>📷</text></svg>" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
+    <!-- 引入字体图标（京东风格） -->
+    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_4088772_980ey658h7.css">
 </head>
 <body>
-    <div class="container">
-        <!-- 标题区域 -->
-        <div class="header">
-            <h1 class="title">相机价格推荐系统</h1>
-            <p class="subtitle">精准价格查询·智能型号推荐·详细参数介绍</p>
-        </div>
-
-        <!-- 品牌筛选栏 -->
-        <div class="brand-group">
-            <button class="brand-btn active" data-brand="">全部品牌</button>
-            <button class="brand-btn" data-brand="佳能">佳能</button>
-            <button class="brand-btn" data-brand="尼康">尼康</button>
-            <button class="brand-btn" data-brand="索尼">索尼</button>
-            <button class="brand-btn" data-brand="富士">富士</button>
-        </div>
-
-        <!-- 搜索区域 -->
-        <div class="search-group">
-            <input type="text" class="search-input" placeholder="输入相机型号搜索（如：佳能80d）">
-            <select class="model-select">
-                <option value="">请选择相机型号</option>
-                <option value="佳能5d4">佳能5d4</option>
-                <option value="富士xs20">富士xs20</option>
-                <option value="佳能80d">佳能80d</option>
-                <option value="佳能r5">佳能r5</option>
-                <option value="富士xt4">富士xt4</option>
-                <option value="富士xt5">富士xt5</option>
-                <option value="尼康d850">尼康d850</option>
-                <option value="尼康z7ii">尼康z7ii</option>
-                <option value="尼康z6">尼康z6</option>
-                <option value="索尼a6400">索尼a6400</option>
-                <option value="索尼a7s3">索尼a7s3</option>
-                <option value="索尼a7m4">索尼a7m4</option>
-            </select>
-            <button class="query-btn">查询</button>
-        </div>
-
-        <!-- 价格区间推荐 -->
-        <div class="price-group">
-            <span class="price-label">🔖 按价格区间推荐</span>
-            <div class="price-btn-group">
-                <button class="price-btn active" data-range="">全部价格</button>
-                <button class="price-btn" data-range="0-5000">入门级（<5000元）</button>
-                <button class="price-btn" data-range="5000-15000">进阶级（5000-15000元）</button>
-                <button class="price-btn" data-range="15000-99999">专业级（>15000元）</button>
+    <!-- 京东风格顶部导航 -->
+    <header class="jd-header">
+        <div class="jd-header-inner">
+            <div class="jd-logo">
+                <i class="iconfont icon-camera"></i>
+                <span>相机价格对比</span>
+            </div>
+            <div class="jd-search-box">
+                <input type="text" class="jd-search-input" placeholder="搜索相机型号（如：佳能80D）">
+                <button class="jd-search-btn">搜索</button>
             </div>
         </div>
+    </header>
 
-        <!-- 相机数据展示区 -->
-        <div class="camera-area">
-            <img src="https://via.placeholder.com/40x40?text=📷" alt="相机图标" class="camera-icon">
-            <div class="camera-list" id="cameraList">
-                <!-- 相机卡片动态渲染 -->
-                <div class="empty-tip">暂无相机数据，请先选择/搜索相机型号</div>
+    <!-- 筛选栏（京东风格） -->
+    <div class="jd-filter-bar">
+        <div class="jd-filter-inner">
+            <!-- 品牌筛选 -->
+            <div class="filter-item brand-filter">
+                <span class="filter-label">品牌：</span>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-brand="">全部</button>
+                    <button class="filter-btn" data-brand="佳能">佳能</button>
+                    <button class="filter-btn" data-brand="尼康">尼康</button>
+                    <button class="filter-btn" data-brand="索尼">索尼</button>
+                    <button class="filter-btn" data-brand="富士">富士</button>
+                </div>
+            </div>
+
+            <!-- 型号筛选 -->
+            <div class="filter-item model-filter">
+                <span class="filter-label">型号：</span>
+                <div class="filter-options">
+                    <select class="model-select">
+                        <option value="">全部型号</option>
+                        <!-- 动态加载型号 -->
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商品列表（京东风格卡片） -->
+    <div class="jd-goods-list">
+        <div class="loading-state">
+            <i class="iconfont icon-loading"></i>
+            <p>正在加载相机数据...</p>
+        </div>
+    </div>
+
+    <!-- 详情弹窗（京东风格） -->
+    <div class="jd-modal" id="detailModal">
+        <div class="modal-mask"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">相机详情</h3>
+                <button class="modal-close"><i class="iconfont icon-close"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-left">
+                    <img src="" alt="" class="detail-img" id="detailImg">
+                </div>
+                <div class="detail-right">
+                    <h4 class="detail-model" id="detailModel"></h4>
+                    <p class="detail-brand" id="detailBrand"></p>
+                    <p class="detail-desc" id="detailDesc">暂无简介</p>
+
+                    <!-- 价格对比模块（京东风格） -->
+                    <div class="price-compare">
+                        <h5 class="compare-title">价格对比</h5>
+                        <!-- 京东价格 -->
+                        <div class="price-item jd-price">
+                            <span class="price-label">京东价格：</span>
+                            <div class="price-values" id="jdPrices">
+                                <span class="price-tag">¥0</span>
+                                <span class="price-tag">¥0</span>
+                                <span class="price-tag">¥0</span>
+                            </div>
+                            <p class="price-avg">均价：<span id="jdAvg">¥0</span></p>
+                        </div>
+                        <!-- 闲鱼价格 -->
+                        <div class="price-item xy-price">
+                            <span class="price-label">闲鱼价格：</span>
+                            <div class="price-values" id="xyPrices">
+                                <span class="price-tag">¥0</span>
+                                <span class="price-tag">¥0</span>
+                                <span class="price-tag">¥0</span>
+                            </div>
+                            <p class="price-avg">均价：<span id="xyAvg">¥0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-close-btn">关闭</button>
             </div>
         </div>
     </div>

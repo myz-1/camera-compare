@@ -1,171 +1,416 @@
-/* 全局样式 - 舒展布局 */
+/* 全局重置 + 京东风格基础配置 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Microsoft YaHei", sans-serif;
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
 }
-
 body {
-    background-color: #fff;
-    padding: 30px;
+    background-color: #f5f5f5;
+    color: #333;
+}
+a {
+    text-decoration: none;
+    color: #333;
+}
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
 }
 
-.container {
-    width: 100%;
+/* 京东顶部导航 */
+.jd-header {
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #e9e9e9;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+.jd-header-inner {
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+}
+.jd-logo {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #e4393c; /* 京东红 */
+    margin-right: 50px;
+}
+.jd-logo .iconfont {
+    font-size: 24px;
+    margin-right: 8px;
+}
+.jd-search-box {
+    flex: 1;
+    display: flex;
+    max-width: 500px;
+}
+.jd-search-input {
+    flex: 1;
+    height: 36px;
+    padding: 0 15px;
+    border: 2px solid #e4393c;
+    border-radius: 3px 0 0 3px;
+    font-size: 14px;
+    outline: none;
+}
+.jd-search-btn {
+    width: 80px;
+    height: 36px;
+    background-color: #e4393c;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 0 3px 3px 0;
+    transition: background-color 0.2s;
+}
+.jd-search-btn:hover {
+    background-color: #d4282b;
 }
 
-/* 标题区域 */
-.header {
-    margin-bottom: 20px;
+/* 筛选栏 */
+.jd-filter-bar {
+    background-color: #fff;
+    border-bottom: 1px solid #e9e9e9;
+    padding: 10px 0;
 }
-
-.title {
-    font-size: 28px;
-    color: #333;
-    margin-bottom: 8px;
+.jd-filter-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
 }
-
-.subtitle {
+.filter-item {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.filter-label {
     font-size: 14px;
     color: #666;
+    margin-right: 10px;
 }
-
-/* 品牌筛选栏 */
-.brand-group {
-    margin-bottom: 15px;
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
-
-.brand-btn {
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    background-color: #f8f9fa;
-    color: #333;
-    cursor: pointer;
-    margin-right: 8px;
-    font-size: 14px;
-    border-radius: 4px;
+.filter-btn {
+    padding: 5px 12px;
+    background-color: #fff;
+    border: 1px solid #e9e9e9;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #666;
+    transition: all 0.2s;
 }
-
-.brand-btn.active {
-    background-color: #007bff;
+.filter-btn.active {
+    background-color: #e4393c;
     color: #fff;
-    border-color: #007bff;
+    border-color: #e4393c;
 }
-
-/* 搜索区域 */
-.search-group {
-    margin-bottom: 15px;
+.filter-btn:hover:not(.active) {
+    border-color: #e4393c;
+    color: #e4393c;
 }
-
-.search-input {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    width: 220px;
-    margin-right: 8px;
-    font-size: 14px;
-    border-radius: 4px;
-}
-
 .model-select {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    margin-right: 8px;
-    font-size: 14px;
-    border-radius: 4px;
-    width: 180px;
+    height: 28px;
+    padding: 0 8px;
+    border: 1px solid #e9e9e9;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #666;
+    outline: none;
+    min-width: 150px;
 }
 
-.query-btn {
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    background-color: #f8f9fa;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 4px;
+/* 商品列表（京东风格卡片） */
+.jd-goods-list {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
 }
-
-.query-btn:hover {
-    background-color: #e9ecef;
-}
-
-/* 价格区间推荐 */
-.price-group {
-    margin-bottom: 20px;
-}
-
-.price-label {
-    font-size: 14px;
-    color: #dc3545;
-    margin-right: 10px;
-}
-
-.price-btn-group {
-    display: inline-block;
-}
-
-.price-btn {
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    background-color: #f8f9fa;
-    color: #333;
-    cursor: pointer;
-    margin-right: 8px;
-    font-size: 14px;
-    border-radius: 4px;
-}
-
-.price-btn.active {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
-
-/* 相机数据展示区 */
-.camera-area {
-    padding: 15px 0;
-}
-
-.camera-icon {
-    width: 40px;
-    height: 40px;
-    vertical-align: middle;
-    margin-right: 10px;
-}
-
-.camera-list {
-    display: inline-block;
-    vertical-align: middle;
-    width: calc(100% - 50px);
-}
-
-.camera-card {
-    display: inline-block;
-    width: 130px;
-    padding: 10px;
-    border: 1px solid #eee;
-    margin-right: 15px;
-    margin-bottom: 15px;
+.loading-state {
+    grid-column: 1 / -1;
     text-align: center;
-    font-size: 14px;
-    border-radius: 4px;
-    background-color: #f8f9fa;
+    padding: 50px 0;
+    color: #999;
 }
-
-.camera-name {
+.loading-state .iconfont {
+    font-size: 30px;
+    margin-bottom: 10px;
+    animation: rotate 1.5s infinite linear;
+    color: #e4393c;
+}
+/* 商品卡片 */
+.goods-card {
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+.goods-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+}
+.card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 1px solid #f4f4f4;
+}
+.card-info {
+    padding: 10px 15px;
+}
+.card-model {
+    font-size: 15px;
+    font-weight: 500;
     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin-bottom: 5px;
 }
-
-.camera-price {
+.card-brand {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 8px;
+}
+.card-price {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.card-price-tag {
+    font-size: 13px;
+    color: #e4393c;
+    font-weight: bold;
+}
+.card-price-avg {
     font-size: 12px;
     color: #666;
 }
-
-.empty-tip {
-    font-size: 14px;
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px 0;
     color: #999;
-    padding: 20px 0;
+}
+.empty-state .iconfont {
+    font-size: 30px;
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+/* 详情弹窗（京东风格） */
+.jd-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none;
+}
+.modal-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 800px;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.modal-header {
+    background-color: #f4f4f4;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e9e9e9;
+}
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+.modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: background-color 0.2s;
+}
+.modal-close:hover {
+    background-color: #e4393c;
+    color: #fff;
+}
+.modal-body {
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+.detail-left {
+    flex: 0 0 250px;
+}
+.detail-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #f4f4f4;
+}
+.detail-right {
+    flex: 1;
+}
+.detail-model {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+.detail-brand {
+    font-size: 14px;
+    color: #e4393c;
+    margin-bottom: 15px;
+}
+.detail-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #e9e9e9;
+}
+.compare-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+.price-item {
+    margin-bottom: 15px;
+}
+.price-label {
+    font-size: 14px;
+    color: #666;
+    margin-right: 10px;
+}
+.price-values {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+.price-tag {
+    padding: 5px 10px;
+    background-color: #fef0f0;
+    color: #e4393c;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.jd-price .price-tag {
+    background-color: #fef0f0;
+    border: 1px solid #e4393c;
+}
+.xy-price .price-tag {
+    background-color: #f0f8fe;
+    color: #409eff;
+    border: 1px solid #409eff;
+}
+.price-avg {
+    font-size: 14px;
+    color: #333;
+}
+.price-avg span {
+    color: #e4393c;
+    font-weight: bold;
+}
+.modal-footer {
+    padding: 15px 20px;
+    text-align: right;
+    border-top: 1px solid #e9e9e9;
+}
+.modal-close-btn {
+    padding: 8px 20px;
+    background-color: #e4393c;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+.modal-close-btn:hover {
+    background-color: #d4282b;
+}
+
+/* 动画 */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .jd-header-inner {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+    .jd-logo {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    .jd-filter-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .filter-item {
+        margin-right: 0;
+        width: 100%;
+    }
+    .modal-body {
+        flex-direction: column;
+    }
+    .detail-left {
+        flex: none;
+        width: 100%;
+    }
+    .detail-img {
+        height: 200px;
+    }
 }

@@ -75,7 +75,7 @@ class JDPriceCrawlerRunner:
         search_url = f"https://search.jd.com/Search?keyword={self.keyword}&enc=utf8&t={int(time.time())}"
         self.browser.get(search_url)
         print(f"⏳ 正在加载【{self.keyword}】京东搜索结果...")
-        time.sleep(1)  # 仅等待1秒（极速版）
+        time.sleep(4)  # 仅等待1秒（极速版）
         
         # 2. 直接提取首屏商品（无滚动！）
         product_items = self.browser.eles('div.gl-item')

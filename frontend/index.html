@@ -3,110 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>相机机身价格对比 - 京东风格</title>
-    <!-- 京东风格图标 + 消除404 -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2290%22 font-size=%2290%22>📷</text></svg>" type="image/svg+xml">
+    <title>相机价格对比 - 京东风格</title>
     <link rel="stylesheet" href="style.css">
-    <!-- 引入字体图标（京东风格） -->
-    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_4088772_980ey658h7.css">
+    <!-- 移除失效的图标库引用，无需依赖外部图标 -->
 </head>
 <body>
-    <!-- 京东风格顶部导航 -->
+    <!-- 头部导航（京东红+简洁布局） -->
     <header class="jd-header">
         <div class="jd-header-inner">
             <div class="jd-logo">
-                <i class="iconfont icon-camera"></i>
+                <!-- 替换相机图标为文本📷，避免图标库依赖 -->
+                <span class="camera-icon">📷</span>
                 <span>相机价格对比</span>
             </div>
-            <div class="jd-search-box">
+            <div class="search-container">
                 <input type="text" class="jd-search-input" placeholder="搜索相机型号（如：佳能80D）">
+                <input type="number" class="price-search-input" placeholder="预期价格（¥）" min="0" step="0.1">
                 <button class="jd-search-btn">搜索</button>
+                <button class="jd-recommend-btn">按价格推荐</button>
             </div>
         </div>
     </header>
 
-    <!-- 筛选栏（京东风格） -->
-    <div class="jd-filter-bar">
-        <div class="jd-filter-inner">
-            <!-- 品牌筛选 -->
-            <div class="filter-item brand-filter">
-                <span class="filter-label">品牌：</span>
-                <div class="filter-options">
-                    <button class="filter-btn active" data-brand="">全部</button>
-                    <button class="filter-btn" data-brand="佳能">佳能</button>
-                    <button class="filter-btn" data-brand="尼康">尼康</button>
-                    <button class="filter-btn" data-brand="索尼">索尼</button>
-                    <button class="filter-btn" data-brand="富士">富士</button>
-                </div>
-            </div>
-
-            <!-- 型号筛选 -->
-            <div class="filter-item model-filter">
-                <span class="filter-label">型号：</span>
-                <div class="filter-options">
-                    <select class="model-select">
-                        <option value="">全部型号</option>
-                        <!-- 动态加载型号 -->
-                    </select>
-                </div>
-            </div>
+    <!-- 品牌筛选栏 -->
+    <div class="brand-filter">
+        <div class="filter-inner">
+            <button class="filter-btn active" data-brand="">全部品牌</button>
+            <button class="filter-btn" data-brand="佳能">佳能</button>
+            <button class="filter-btn" data-brand="尼康">尼康</button>
+            <button class="filter-btn" data-brand="索尼">索尼</button>
+            <button class="filter-btn" data-brand="富士">富士</button>
         </div>
     </div>
 
-    <!-- 商品列表（京东风格卡片） -->
-    <div class="jd-goods-list">
-        <div class="loading-state">
-            <i class="iconfont icon-loading"></i>
-            <p>正在加载相机数据...</p>
+    <!-- 型号筛选栏 -->
+    <div class="model-filter">
+        <div class="filter-inner">
+            <select class="model-select">
+                <option value="">全部型号</option>
+            </select>
         </div>
     </div>
 
-    <!-- 详情弹窗（京东风格） -->
-    <div class="jd-modal" id="detailModal">
+    <!-- 商品列表 -->
+    <div class="goods-list" id="jdGoodsList"></div>
+
+    <!-- 详情弹窗（右上角文本叉号） -->
+    <div class="modal" id="detailModal">
         <div class="modal-mask"></div>
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">相机详情</h3>
-                <button class="modal-close"><i class="iconfont icon-close"></i></button>
-            </div>
+            <!-- 右上角文本叉号关闭按钮（核心修改） -->
+            <button class="modal-close" id="modalClose">×</button>
             <div class="modal-body">
-                <div class="detail-left">
-                    <img src="" alt="" class="detail-img" id="detailImg">
+                <div class="modal-img">
+                    <img src="" alt="" id="detailImg">
                 </div>
-                <div class="detail-right">
-                    <h4 class="detail-model" id="detailModel"></h4>
-                    <p class="detail-brand" id="detailBrand"></p>
-                    <p class="detail-desc" id="detailDesc">暂无简介</p>
-
-                    <!-- 价格对比模块（京东风格） -->
-                    <div class="price-compare">
-                        <h5 class="compare-title">价格对比</h5>
-                        <!-- 京东价格 -->
-                        <div class="price-item jd-price">
-                            <span class="price-label">京东价格：</span>
-                            <div class="price-values" id="jdPrices">
-                                <span class="price-tag">¥0</span>
-                                <span class="price-tag">¥0</span>
-                                <span class="price-tag">¥0</span>
-                            </div>
-                            <p class="price-avg">均价：<span id="jdAvg">¥0</span></p>
-                        </div>
-                        <!-- 闲鱼价格 -->
-                        <div class="price-item xy-price">
-                            <span class="price-label">闲鱼价格：</span>
-                            <div class="price-values" id="xyPrices">
-                                <span class="price-tag">¥0</span>
-                                <span class="price-tag">¥0</span>
-                                <span class="price-tag">¥0</span>
-                            </div>
-                            <p class="price-avg">均价：<span id="xyAvg">¥0</span></p>
-                        </div>
+                <div class="modal-info">
+                    <h3 id="detailModel"></h3>
+                    <p id="detailBrand" class="modal-brand"></p>
+                    <div class="price-section">
+                        <h4>京东价格</h4>
+                        <div class="price-tags" id="jdPrices"></div>
+                        <p class="price-avg">均价：<span id="jdAvg"></span></p>
+                    </div>
+                    <div class="price-section">
+                        <h4>闲鱼价格</h4>
+                        <div class="price-tags" id="xyPrices"></div>
+                        <p class="price-avg">均价：<span id="xyAvg"></span></p>
+                    </div>
+                    <div class="desc-section">
+                        <h4>产品简介</h4>
+                        <p id="detailDesc"></p>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="modal-close-btn">关闭</button>
-            </div>
+        </div>
+    </div>
+
+    <!-- 错误提示弹窗（美化版） -->
+    <div class="alert-modal" id="alertModal">
+        <div class="alert-content">
+            <p id="alertMessage"></p>
+            <button class="alert-confirm" id="alertConfirm">确定</button>
         </div>
     </div>
 

@@ -1,7 +1,7 @@
 // ===================== 核心配置 =====================
 // 图片加载失败兜底函数
 function handleImgError(imgElement) {
-    imgElement.src = "./img/default.jpg"; // 默认图路径（需放在frontend/img下）
+    imgElement.src = "./img/default.jpg";
     imgElement.alt = "相机默认图片";
     imgElement.style.objectFit = "cover";
 }
@@ -70,7 +70,6 @@ const jdPrices = document.getElementById('jdPrices');
 const jdAvg = document.getElementById('jdAvg');
 const xyPrices = document.getElementById('xyPrices');
 const xyAvg = document.getElementById('xyAvg');
-// 错误提示弹窗元素
 const alertModal = document.getElementById('alertModal');
 const alertMessage = document.getElementById('alertMessage');
 const alertConfirm = document.getElementById('alertConfirm');
@@ -86,6 +85,26 @@ let allCameraData = [];
 function showAlert(msg) {
     alertMessage.textContent = msg;
     alertModal.style.display = 'flex';
+}
+
+/* 根据平台选择计算“推荐用价格” */
+function getComparePrice(item, platform) {
+    if (platform === 'jd') return item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length;
+    if (platform === 'xy') return item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length;
+    // both：原逻辑（京东+咸鱼平均）
+    const jdAvg = item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length;
+    const xyAvg = item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length;
+    return (jdAvg + xyAvg) / 2;
+}
+
+/* 根据平台选择生成“推荐列表” */
+function recommendByPlatform(targetPrice, platform) {
+    return allCameraData.map(item => {
+        const cmpPrice = getComparePrice(item, platform);
+        const diff = Math.abs(cmpPrice - targetPrice);
+        const matchRate = Math.max(0, 100 - (diff / targetPrice) * 100).toFixed(1);
+        return { ...item, cmpPrice: cmpPrice.toFixed(1), diff: diff.toFixed(1), matchRate };
+    }).sort((a, b) => a.diff - b.diff);
 }
 
 // ===================== 页面初始化 =====================
@@ -113,9 +132,9 @@ async function loadDataFromBackend() {
                 const standardModel = item.camera_model.replace(/\s+/g, '');
                 const imgPath = `./img/${standardModel}.jpg`;
                 const jdPrices = item.jd_prices || generatePriceList(item.min_price, item.max_price, 3);
-                const xianyuPrices = item.xianyu_prices || generatePriceList(Math.floor(item.min_price*0.7), Math.floor(item.max_price*0.8), 3);
+                const xianyuPrices = item.xianyu_prices || generatePriceList(Math.floor(item.min_price * 0.7), Math.floor(item.max_price * 0.8), 3);
                 const desc = item.desc || MODEL_DESC[standardModel] || "暂无产品简介";
-                const refAvg = (jdPrices.reduce((a,b)=>a+b,0)/jdPrices.length + xianyuPrices.reduce((a,b)=>a+b,0)/xianyuPrices.length)/2;
+                const refAvg = (jdPrices.reduce((a, b) => a + b, 0) / jdPrices.length + xianyuPrices.reduce((a, b) => a + b, 0) / xianyuPrices.length) / 2;
 
                 return {
                     brand: item.brand,
@@ -144,7 +163,7 @@ async function loadDataFromBackend() {
 // 辅助：生成价格列表
 function generatePriceList(min, max, count) {
     const step = Math.floor((max - min) / (count - 1));
-    return Array.from({length: count}, (_, i) => min + i * step);
+    return Array.from({ length: count }, (_, i) => min + i * step);
 }
 
 // 辅助：生成默认全量型号数据
@@ -152,71 +171,71 @@ function generateDefaultFullData() {
     const defaultData = [];
     // 佳能
     const canonModels = [
-        {"model": "佳能80D", "min_price": 1000, "max_price": 20000},
-        {"model": "佳能R100", "min_price": 500, "max_price": 10000},
-        {"model": "佳能R50", "min_price": 2000, "max_price": 10000},
-        {"model": "佳能R7", "min_price": 1000, "max_price": 20000},
-        {"model": "佳能R6", "min_price": 1000, "max_price": 20000},
-        {"model": "佳能5D4", "min_price": 3000, "max_price": 25000},
-        {"model": "佳能6D2", "min_price": 2000, "max_price": 18000},
-        {"model": "佳能R8", "min_price": 4000, "max_price": 15000},
-        {"model": "佳能R10", "min_price": 1500, "max_price": 12000},
-        {"model": "佳能M50 II", "min_price": 1000, "max_price": 8000},
-        {"model": "佳能R5", "min_price": 8000, "max_price": 35000},
-        {"model": "佳能850D", "min_price": 1500, "max_price": 9000}
+        { "model": "佳能80D", "min_price": 1000, "max_price": 20000 },
+        { "model": "佳能R100", "min_price": 500, "max_price": 10000 },
+        { "model": "佳能R50", "min_price": 2000, "max_price": 10000 },
+        { "model": "佳能R7", "min_price": 1000, "max_price": 20000 },
+        { "model": "佳能R6", "min_price": 1000, "max_price": 20000 },
+        { "model": "佳能5D4", "min_price": 3000, "max_price": 25000 },
+        { "model": "佳能6D2", "min_price": 2000, "max_price": 18000 },
+        { "model": "佳能R8", "min_price": 4000, "max_price": 15000 },
+        { "model": "佳能R10", "min_price": 1500, "max_price": 12000 },
+        { "model": "佳能M50II", "min_price": 1000, "max_price": 8000 },
+        { "model": "佳能R5", "min_price": 8000, "max_price": 35000 },
+        { "model": "佳能850D", "min_price": 1500, "max_price": 9000 }
     ];
     // 尼康
     const nikonModels = [
-        {"model": "尼康Z6", "min_price": 2000, "max_price": 30000},
-        {"model": "尼康D850", "min_price": 4000, "max_price": 28000},
-        {"model": "尼康Z7II", "min_price": 6000, "max_price": 35000},
-        {"model": "尼康Z5", "min_price": 3000, "max_price": 18000},
-        {"model": "尼康Z8", "min_price": 15000, "max_price": 45000},
-        {"model": "尼康D7500", "min_price": 1500, "max_price": 10000},
-        {"model": "尼康D5600", "min_price": 1000, "max_price": 8000},
-        {"model": "尼康Zfc", "min_price": 2000, "max_price": 10000},
-        {"model": "尼康Z9", "min_price": 10000, "max_price": 60000}
+        { "model": "尼康z6", "min_price": 2000, "max_price": 30000 },
+        { "model": "尼康d850", "min_price": 4000, "max_price": 28000 },
+        { "model": "尼康z7ii", "min_price": 6000, "max_price": 35000 },
+        { "model": "尼康Z5", "min_price": 3000, "max_price": 18000 },
+        { "model": "尼康Z8", "min_price": 15000, "max_price": 45000 },
+        { "model": "尼康D7500", "min_price": 1500, "max_price": 10000 },
+        { "model": "尼康D5600", "min_price": 1000, "max_price": 8000 },
+        { "model": "尼康Zfc", "min_price": 2000, "max_price": 10000 },
+        { "model": "尼康Z9", "min_price": 10000, "max_price": 60000 }
     ];
     // 索尼
     const sonyModels = [
-        {"model": "索尼A7M4", "min_price": 5000, "max_price": 15000},
-        {"model": "索尼A6400", "min_price": 2000, "max_price": 8000},
-        {"model": "索尼A7S3", "min_price": 10000, "max_price": 40000},
-        {"model": "索尼A7C", "min_price": 4000, "max_price": 16000},
-        {"model": "索尼A7R5", "min_price": 12000, "max_price": 38000},
-        {"model": "索尼ZV-E10", "min_price": 2000, "max_price": 8000},
-        {"model": "索尼A6700", "min_price": 3000, "max_price": 10000},
-        {"model": "索尼FX3", "min_price": 15000, "max_price": 40000},
-        {"model": "索尼A1", "min_price": 10000, "max_price": 60000}
+        { "model": "索尼a7m4", "min_price": 5000, "max_price": 15000 },
+        { "model": "索尼a6400", "min_price": 2000, "max_price": 8000 },
+        { "model": "索尼a7s3", "min_price": 10000, "max_price": 40000 },
+        { "model": "索尼A7C", "min_price": 4000, "max_price": 16000 },
+        { "model": "索尼A7R5", "min_price": 12000, "max_price": 38000 },
+        { "model": "索尼ZV-E10", "min_price": 2000, "max_price": 8000 },
+        { "model": "索尼A6700", "min_price": 3000, "max_price": 10000 },
+        { "model": "索尼FX3", "min_price": 15000, "max_price": 40000 },
+        { "model": "索尼A1", "min_price": 10000, "max_price": 60000 }
     ];
     // 富士
     const fujifilmModels = [
-        {"model": "富士Xt5", "min_price": 4000, "max_price": 12000},
-        {"model": "富士Xs20", "min_price": 3000, "max_price": 10000},
-        {"model": "富士Xt4", "min_price": 3500, "max_price": 11000},
-        {"model": "富士XT30II", "min_price": 2500, "max_price": 9000},
-        {"model": "富士X100V", "min_price": 4000, "max_price": 12000},
-        {"model": "富士XS10", "min_price": 3000, "max_price": 10000},
-        {"model": "富士GFX50SII", "min_price": 10000, "max_price": 35000},
-        {"model": "富士X-H2", "min_price": 6000, "max_price": 18000}
+        { "model": "富士xt5", "min_price": 4000, "max_price": 12000 },
+        { "model": "富士xs20", "min_price": 3000, "max_price": 10000 },
+        { "model": "富士xt4", "min_price": 3500, "max_price": 11000 },
+        { "model": "富士XT30II", "min_price": 2500, "max_price": 9000 },
+        { "model": "富士X100V", "min_price": 4000, "max_price": 12000 },
+        { "model": "富士XS10", "min_price": 3000, "max_price": 10000 },
+        { "model": "富士GFX50SII", "min_price": 10000, "max_price": 35000 },
+        { "model": "富士X-H2", "min_price": 6000, "max_price": 18000 }
     ];
 
     // 整合所有品牌
     const allBrandModels = [
-        {brand: "佳能", models: canonModels},
-        {brand: "尼康", models: nikonModels},
-        {brand: "索尼", models: sonyModels},
-        {brand: "富士", models: fujifilmModels}
+        { brand: "佳能", models: canonModels },
+        { brand: "尼康", models: nikonModels },
+        { brand: "索尼", models: sonyModels },
+        { brand: "富士", models: fujifilmModels }
     ];
 
     // 生成完整数据
-    allBrandModels.forEach(({brand, models}) => {
+    allBrandModels.forEach(({ brand, models }) => {
         models.forEach(item => {
             const standardModel = item.model.replace(/\s+/g, '');
             const jdPrices = generatePriceList(item.min_price, item.max_price, 3);
-            const xianyuPrices = generatePriceList(Math.floor(item.min_price*0.7), Math.floor(item.max_price*0.8), 3);
-            const refAvg = (jdPrices.reduce((a,b)=>a+b,0)/jdPrices.length + xianyuPrices.reduce((a,b)=>a+b,0)/xianyuPrices.length)/2;
-            
+            const xianyuPrices = generatePriceList(Math.floor(item.min_price * 0.7), Math.floor(item.max_price * 0.8), 3);
+            const refAvg = (jdPrices.reduce((a, b) => a + b, 0) / jdPrices.length + xianyuPrices.reduce((a, b) => a + b, 0) / xianyuPrices.length) / 2;
+
             defaultData.push({
                 brand: brand,
                 camera_model: standardModel,
@@ -240,31 +259,15 @@ function recommendByPrice(targetPrice) {
         showAlert("请输入有效的预期价格！");
         return [];
     }
-
-    const recommendList = [...allCameraData].map(item => {
-        const jdAvgVal = item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length;
-        const xyAvgVal = item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length;
-        const comprehensiveAvg = (jdAvgVal + xyAvgVal) / 2;
-        
-        const priceDiff = Math.abs(comprehensiveAvg - targetPrice);
-        const matchRate = Math.max(0, 100 - (priceDiff / targetPrice) * 100).toFixed(1);
-        
-        return {
-            ...item,
-            comprehensiveAvg: comprehensiveAvg.toFixed(1),
-            priceDiff: priceDiff.toFixed(1),
-            matchRate: matchRate
-        };
-    });
-
-    return recommendList.sort((a, b) => a.priceDiff - b.priceDiff);
+    const platform = document.querySelector('input[name="platform"]:checked').value; // 读平台
+    const list = recommendByPlatform(targetPrice, platform);
+    return list;
 }
 
 // ===================== 渲染函数 =====================
 // 渲染普通商品列表
 function renderGoodsList(data) {
     jdGoodsList.innerHTML = '';
-
     if (!data || data.length === 0) {
         jdGoodsList.innerHTML = `
             <div class="empty-state">
@@ -274,7 +277,6 @@ function renderGoodsList(data) {
         `;
         return;
     }
-
     data.forEach(item => {
         const jdAvgVal = (item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length).toFixed(1);
         const xyAvgVal = (item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length).toFixed(1);
@@ -299,10 +301,9 @@ function renderGoodsList(data) {
     });
 }
 
-// 渲染价格推荐列表
+// 渲染价格推荐列表（带平台标签）
 function renderRecommendList(data, targetPrice) {
     jdGoodsList.innerHTML = '';
-
     if (!data || data.length === 0) {
         jdGoodsList.innerHTML = `
             <div class="empty-state">
@@ -312,11 +313,8 @@ function renderRecommendList(data, targetPrice) {
         `;
         return;
     }
-
     data.forEach(item => {
-        const jdAvgVal = (item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length).toFixed(1);
-        const xyAvgVal = (item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length).toFixed(1);
-
+        const tagText = item.platformTag || '综合';
         const card = document.createElement('div');
         card.className = 'goods-card';
         card.dataset.model = item.camera_model;
@@ -325,29 +323,27 @@ function renderRecommendList(data, targetPrice) {
             <div class="card-info">
                 <h3 class="card-model">
                     ${item.camera_model}
-                    <span class="recommend-tag">匹配度${item.matchRate}%</span>
+                    <span class="recommend-tag">${tagText}匹配度${item.matchRate}%</span>
                 </h3>
                 <p class="card-brand">${item.brand}</p>
                 <div class="card-price">
-                    <span class="card-price-tag">¥${jdAvgVal}</span>
-                    <span class="card-price-avg">/ 闲鱼¥${xyAvgVal}</span>
+                    <span class="card-price-tag">¥${item.cmpPrice}</span>
+                    <span class="card-price-avg">/ 预算差 ¥${item.diff}</span>
                 </div>
-                <p class="price-diff">与预算¥${targetPrice}差值：¥${item.priceDiff}（综合均价¥${item.comprehensiveAvg}）</p>
             </div>
         `;
-
         card.addEventListener('click', () => openDetailModal(item));
         jdGoodsList.appendChild(card);
     });
 }
 
-// 打开详情弹窗（右上角叉号）
+// 打开详情弹窗（右上角文本叉号）
 function openDetailModal(item) {
     // 填充图片
     detailImg.src = item.img;
     detailImg.alt = item.camera_model;
     detailImg.onerror = () => handleImgError(detailImg);
-    
+
     // 填充基础信息
     detailModel.textContent = item.camera_model;
     detailBrand.textContent = `品牌：${item.brand}`;
@@ -387,8 +383,8 @@ function filterGoods(brand = '', model = '', search = '', dataSource = allCamera
     // 关键词筛选
     if (search) {
         const keyword = search.toLowerCase();
-        filtered = filtered.filter(item => 
-            item.camera_model.toLowerCase().includes(keyword) || 
+        filtered = filtered.filter(item =>
+            item.camera_model.toLowerCase().includes(keyword) ||
             item.brand.toLowerCase().includes(keyword)
         );
     }
@@ -416,17 +412,17 @@ function bindEvents() {
             // 1. 重置按钮激活状态
             brandBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             // 2. 清空价格输入框（避免残留价格影响筛选）
             priceSearchInput.value = '';
-            
+
             // 3. 重置型号下拉框为“全部型号”
             modelSelect.value = '';
-            
+
             // 4. 只按品牌筛选（忽略之前的搜索/价格条件）
             const brand = btn.dataset.brand;
             const filtered = filterGoods(brand, '', '');
-            
+
             // 5. 渲染品牌对应的所有数据
             renderGoodsList(filtered);
         });
@@ -438,51 +434,47 @@ function bindEvents() {
         const keyword = searchInput.value.trim();
         const targetPrice = parseFloat(priceSearchInput.value.trim());
 
-        let filtered = filterGoods(activeBrand, modelSelect.value, keyword);
-        
+        let filtered = [...allCameraData];
+        // 价格筛选
         if (targetPrice && !isNaN(targetPrice)) {
             filtered = filtered.map(item => {
-                const jdAvgVal = item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length;
-                const xyAvgVal = item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length;
-                const comprehensiveAvg = (jdAvgVal + xyAvgVal) / 2;
-                return { ...item, comprehensiveAvg };
+                const cmpPrice = getComparePrice(item, document.querySelector('input[name="platform"]:checked').value);
+                return { ...item, cmpPrice };
             }).filter(item => {
-                return item.comprehensiveAvg >= targetPrice * 0.8 && item.comprehensiveAvg <= targetPrice * 1.2;
+                return item.cmpPrice >= targetPrice * 0.8 && item.cmpPrice <= targetPrice * 1.2;
             });
+        }
 
-            const recommendResult = filtered.map(item => {
-                const priceDiff = Math.abs(item.comprehensiveAvg - targetPrice);
-                const matchRate = Math.max(0, 100 - (priceDiff / targetPrice) * 100).toFixed(1);
-                return {
-                    ...item,
-                    comprehensiveAvg: item.comprehensiveAvg.toFixed(1),
-                    priceDiff: priceDiff.toFixed(1),
-                    matchRate: matchRate
-                };
-            }).sort((a, b) => a.priceDiff - b.priceDiff);
-            renderRecommendList(recommendResult, targetPrice);
+        // 原有筛选条件
+        filtered = filterGoods(activeBrand, modelSelect.value, keyword, filtered);
+
+        // 渲染结果
+        if (targetPrice && !isNaN(targetPrice)) {
+            const platform = document.querySelector('input[name="platform"]:checked').value;
+            const list = recommendByPlatform(targetPrice, platform);
+            const filteredList = filterGoods(activeBrand, modelSelect.value, keyword, list);
+            renderRecommendList(filteredList, targetPrice);
         } else {
             renderGoodsList(filtered);
         }
     });
 
-    // 搜索按钮事件
+    // 搜索按钮事件（支持平台单选）
     searchBtn.addEventListener('click', () => {
         const activeBrand = document.querySelector('.filter-btn.active').dataset.brand;
         const model = modelSelect.value;
         const keyword = searchInput.value.trim();
         const targetPrice = parseFloat(priceSearchInput.value.trim());
+        const platform = document.querySelector('input[name="platform"]:checked').value; // 读平台
 
         let filtered = [...allCameraData];
         // 价格筛选
         if (targetPrice && !isNaN(targetPrice)) {
             filtered = filtered.map(item => {
-                const jdAvgVal = item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length;
-                const xyAvgVal = item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length;
-                const comprehensiveAvg = (jdAvgVal + xyAvgVal) / 2;
-                return { ...item, comprehensiveAvg };
+                const cmpPrice = getComparePrice(item, platform);
+                return { ...item, cmpPrice };
             }).filter(item => {
-                return item.comprehensiveAvg >= targetPrice * 0.8 && item.comprehensiveAvg <= targetPrice * 1.2;
+                return item.cmpPrice >= targetPrice * 0.8 && item.cmpPrice <= targetPrice * 1.2;
             });
         }
 
@@ -491,34 +483,20 @@ function bindEvents() {
 
         // 渲染结果
         if (targetPrice && !isNaN(targetPrice)) {
-            const recommendResult = filtered.map(item => {
-                const priceDiff = Math.abs(item.comprehensiveAvg - targetPrice);
-                const matchRate = Math.max(0, 100 - (priceDiff / targetPrice) * 100).toFixed(1);
-                return {
-                    ...item,
-                    comprehensiveAvg: item.comprehensiveAvg.toFixed(1),
-                    priceDiff: priceDiff.toFixed(1),
-                    matchRate: matchRate
-                };
-            }).sort((a, b) => a.priceDiff - b.priceDiff);
-            renderRecommendList(recommendResult, targetPrice);
+            const list = recommendByPlatform(targetPrice, platform);
+            const filteredList = filterGoods(activeBrand, model, keyword, list);
+            renderRecommendList(filteredList, targetPrice);
         } else {
             renderGoodsList(filtered);
         }
     });
 
-    // 推荐按钮事件
+    // 推荐按钮事件（支持平台单选）
     jdRecommendBtn.addEventListener('click', () => {
         const targetPrice = parseFloat(priceSearchInput.value.trim());
-        const keyword = searchInput.value.trim();
-        const activeBrand = document.querySelector('.filter-btn.active').dataset.brand;
-        const selectedModel = modelSelect.value;
-
-        let recommendResult = recommendByPrice(targetPrice);
-        if (recommendResult.length === 0) return;
-
-        recommendResult = filterGoods(activeBrand, selectedModel, keyword, recommendResult);
-        renderRecommendList(recommendResult, targetPrice);
+        const platform = document.querySelector('input[name="platform"]:checked').value; // 读平台
+        const list = recommendByPlatform(targetPrice, platform);
+        renderRecommendList(list, targetPrice);
     });
 
     // 回车触发
@@ -552,3 +530,7 @@ function initModelSelect() {
     }
     modelSelect.innerHTML = options;
 }
+
+// ===================== 管理员入口跳转 =====================
+const adminBtn = document.getElementById('adminBtnFixed');
+if (adminBtn) adminBtn.onclick = () => location.href = '/admin.html';

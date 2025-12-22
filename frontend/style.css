@@ -31,6 +31,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-right: 80px;
 }
 .jd-logo i {
     font-size: 26px;
@@ -84,6 +85,12 @@ body {
 }
 .jd-recommend-btn:hover {
     background-color: #337ecc;
+}
+.admin-login-wrap{
+    margin-left: auto;          /* 推到最右 */
+    display: flex;
+    align-items: center;        /* 与搜索容器同高 */
+    height: 38px;               /* 同.search-container */
 }
 
 /* 品牌筛选栏 */

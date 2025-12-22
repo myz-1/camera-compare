@@ -122,7 +122,7 @@ window.onload = async () => {
 // ===================== 核心：从后端拉取全量数据 =====================
 async function loadDataFromBackend() {
     try {
-        // 请求后端接口（替换为你的实际后端地址）
+        // 请求后端接口
         const response = await fetch('http://127.0.0.1:5000/api/camera/all');
         const result = await response.json();
 

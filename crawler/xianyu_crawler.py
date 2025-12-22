@@ -6,7 +6,7 @@ class XianyuPriceOnly:
     def __init__(self):
         self.filtered_prices = []
         self.browser = None
-        # 配置参数（只改这3行）
+        # 配置参数
         self.keyword = '佳能80d'
         self.min_price = 1000
         self.max_price = 20000

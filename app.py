@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# 数据库配置（替换为你的实际配置）
+# 数据库配置
 MYSQL_CONFIG: Dict[str, any] = {
     "host": "localhost",
     "port": 3306,

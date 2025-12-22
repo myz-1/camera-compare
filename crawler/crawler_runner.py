@@ -1,11 +1,11 @@
 import time
 import json
 
-# 导入独立的爬虫文件（确保文件在同一目录）
+# 导入独立的爬虫文件
 from xianyu_crawler import XianyuPriceOnly  # 闲鱼爬虫独立文件
 from jd_crawler_new import get_jd_prices_simple  # 京东爬虫独立文件
 
-# 导入真实数据库操作文件（关键：使用你的db_operation.py）
+# 导入真实数据库操作文件
 from db_operation import (
     init_db, 
     save_camera_price_by_brand, 
@@ -64,16 +64,16 @@ CAMERA_CONFIGS = {
     ],
 }
 
-# 全局变量：数据写入模式（新增/替换）
+# 全局变量：数据写入模式
 WRITE_MODE = "add"  # 默认新增模式
 
 def get_middle_three_prices(prices):
     """从价格列表中筛选中间3个价格（排序后取中间），并保留1位小数"""
-    # 1. 去重 + 排序（原逻辑）
+    # 1. 去重 + 排序
     unique_prices = sorted(list(set(prices)))  # 去重+排序
     price_count = len(unique_prices)
     
-    # 2. 筛选中间3个价格（原逻辑）
+    # 2. 筛选中间3个价格
     if price_count <= 3:
         middle_prices = unique_prices
     else:
@@ -95,7 +95,7 @@ def run_xianyu_crawler(model, min_price, max_price):
     xianyu.max_price = max_price
     xianyu.run(need_login=False)  # 首次运行改为True，后续False
     
-    # 打印价格筛选结果（增强日志）
+    # 打印价格筛选结果
     print(f"\n===== 【{model}】价格筛选结果 =====")
     print(f"筛选区间：{min_price} - {max_price} 元")
     print(f"符合条件的价格：{xianyu.filtered_prices}")
@@ -110,7 +110,7 @@ def run_jd_crawler(model, min_price, max_price):
     """调用京东爬虫（独立文件），返回中间3个价格"""
     try:
         print("⏳ 正在加载【{}】京东搜索结果...".format(model))
-        # 调用京东爬虫的简化函数（传递完整参数）
+        # 调用京东爬虫的简化函（传递完整参数）
         jd_prices_raw = get_jd_prices_simple(
             keyword=model,
             min_price=min_price,
@@ -164,7 +164,7 @@ def save_price_data(model, xianyu_prices, jd_prices):
             conn.commit()
             print(f"🗑️  已删除【{brand}-{model}】历史数据")
             
-            # 3. 插入新数据（调用原有保存函数）
+            # 3. 插入新数据
             save_camera_price_by_brand(model, xianyu_prices, jd_prices)
             print(f"💾 【替换模式】更新【{brand}-{model}】最新价格：")
             print(f"   新闲鱼价格：{xianyu_prices}")
@@ -191,7 +191,7 @@ def crawl_single_model(config):
     xianyu_prices = run_xianyu_crawler(model, min_price, max_price)
     # 爬取京东价格
     jd_prices = run_jd_crawler(model, min_price, max_price)
-    # 保存/更新数据（真实写入数据库）
+    # 保存/更新数据
     save_price_data(model, xianyu_prices, jd_prices)
     # 防反爬延迟
     time.sleep(3)
@@ -278,12 +278,12 @@ def main_control():
     # 第一步：选择写入模式
     choose_write_mode()
     
-    # 第二步：选择爬取方式（新增选项4：爬取单个型号）
+    # 第二步：选择爬取方式
     print("\n===== 相机价格爬取控制中心 =====")
     print("1. 爬取指定品牌")
     print("2. 爬取所有品牌（一键爬取）")
     print("3. 爬取单个指定型号")  # 新增选项
-    print("4. 退出")  # 原有3改为4
+    print("4. 退出")  
     
     while True:
         choice = input("\n请输入操作编号（1/2/3/4）：").strip()
@@ -306,5 +306,5 @@ def main_control():
             print("❌ 输入错误，请输入1/2/3/4")
 
 if __name__ == "__main__":
-    # 启动控制中心（新增模式选择）
+    # 启动控制中心
     main_control()

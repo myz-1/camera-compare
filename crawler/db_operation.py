@@ -2,7 +2,7 @@ import pymysql
 import json
 from datetime import datetime
 
-# MySQL配置（请修改为你的实际配置）
+# MySQL配置
 MYSQL_CONFIG = {
     "host": "localhost",
     "port": 3306,

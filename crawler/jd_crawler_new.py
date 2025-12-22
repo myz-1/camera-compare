@@ -1,4 +1,4 @@
-# jd_crawler_new.py（完整版：包含类+调用函数）
+# jd_crawler_new.py
 from DrissionPage import ChromiumPage, ChromiumOptions
 import time
 import re
@@ -35,7 +35,7 @@ class JDPriceCrawlerRunner:
             return self.browser
         
         co = ChromiumOptions()
-        # 反爬+防缓存配置（保留核心）
+        # 反爬+防缓存配置
         co.set_argument('--disable-blink-features=AutomationControlled')
         co.set_argument('--ignore-certificate-errors')
         co.set_argument(f'--user-data-dir={self.browser_data_dir}')
@@ -57,9 +57,9 @@ class JDPriceCrawlerRunner:
         print("📌 登录状态已保存，后续运行无需重复登录")
 
     def _extract_price_from_item(self, item) -> Optional[float]:
-        """从单个商品元素提取价格（极速版）"""
+        """从单个商品元素提取价格"""
         try:
-            # 优先提取data-price属性（最稳定+最快）
+            # 优先提取data-price属性
             price_attr = item.attr('data-price') or item.ele('.p-price').attr('data-price')
             if price_attr and price_attr.replace('.', '').isdigit():
                 return float(price_attr)
@@ -75,9 +75,9 @@ class JDPriceCrawlerRunner:
         search_url = f"https://search.jd.com/Search?keyword={self.keyword}&enc=utf8&t={int(time.time())}"
         self.browser.get(search_url)
         print(f"⏳ 正在加载【{self.keyword}】京东搜索结果...")
-        time.sleep(4)  # 仅等待1秒（极速版）
+        time.sleep(4)  
         
-        # 2. 直接提取首屏商品（无滚动！）
+        # 2. 直接提取首屏商品
         product_items = self.browser.eles('div.gl-item')
         print(f"🔍 找到 {len(product_items)} 个首屏商品，开始提取价格...")
         
@@ -89,7 +89,7 @@ class JDPriceCrawlerRunner:
             if price and self.min_price <= price <= self.max_price:
                 valid_prices.append(price)
         
-        # 兜底：如果首屏不够，极简全局匹配（几乎用不到）
+        # 兜底：如果首屏不够，极简全局匹配
         if not valid_prices:
             page_source = self.browser.html
             price_pattern = re.compile(r'¥\s*(\d+(?:\.\d+)?)')

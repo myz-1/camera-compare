@@ -8,9 +8,17 @@
         body { background: #f5f5f5; padding: 20px; }
         .login-box { width: 400px; margin: 100px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .login-box h2 { text-align: center; margin-bottom: 20px; color: #e4393c; }
-        .form-item { margin: 15px 0; display: flex; align-items: center; }
-        .form-item label { width: 80px; }
+        .form-item { margin: 15px 0; display: flex; align-items: flex-start; } /* 仅修改align-items为flex-start适配文本域 */
+        .form-item label { width: 80px; padding-top: 8px; } /* 新增padding-top对齐文本域 */
         .form-item input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .form-item textarea { /* 新增文本域样式，和原有输入框保持一致 */
+            flex: 1; 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            min-height: 120px;
+            resize: vertical;
+        }
         .btn { padding: 8px 16px; background: #e4393c; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px; }
         .btn:hover { background: #d02828; }
         .msg { text-align: center; margin-top: 10px; color: red; }
@@ -53,6 +61,8 @@
             <div class="form-item"><label>最低价格：</label><input type="number" id="addMinPrice" placeholder="5000"></div>
             <div class="form-item"><label>最高价格：</label><input type="number" id="addMaxPrice" placeholder="8000"></div>
             <div class="form-item"><label>平均价格：</label><input type="number" id="addAvgPrice" placeholder="6500"></div>
+            <!-- 新增：简介输入框（格式和原有保持一致） -->
+            <div class="form-item"><label>相机简介：</label><textarea id="addDescription" placeholder="输入相机详细参数和描述..."></textarea></div>
             <div class="form-item"><label>京东价格：</label><input type="text" id="addJdPrices" placeholder="多个价格用逗号分隔"></div>
             <div class="form-item"><label>闲鱼价格：</label><input type="text" id="addXianyuPrices" placeholder="多个价格用逗号分隔"></div>
             <div class="form-item"><label>爬取时间：</label><input type="datetime-local" id="addCrawlTime"></div>
@@ -79,6 +89,8 @@
             <div class="form-item"><label>最低价格：</label><input type="number" id="editMinPrice"></div>
             <div class="form-item"><label>最高价格：</label><input type="number" id="editMaxPrice"></div>
             <div class="form-item"><label>平均价格：</label><input type="number" id="editAvgPrice"></div>
+            <!-- 新增：简介输入框（格式和原有保持一致） -->
+            <div class="form-item"><label>相机简介：</label><textarea id="editDescription" placeholder="输入相机详细参数和描述..."></textarea></div>
             <div class="form-item"><label>京东价格：</label><input type="text" id="editJdPrices" placeholder="多个价格用逗号分隔"></div>
             <div class="form-item"><label>闲鱼价格：</label><input type="text" id="editXianyuPrices" placeholder="多个价格用逗号分隔"></div>
             <div class="form-item"><label>爬取时间：</label><input type="datetime-local" id="editCrawlTime"></div>
@@ -155,6 +167,8 @@
             const min_price = document.getElementById('addMinPrice').value;
             const max_price = document.getElementById('addMaxPrice').value;
             const avg_price = document.getElementById('addAvgPrice').value;
+            // 新增：获取简介值
+            const description = document.getElementById('addDescription').value.trim();
             const jd_prices = document.getElementById('addJdPrices').value.split(',').map(Number);
             const xianyu_prices = document.getElementById('addXianyuPrices').value.split(',').map(Number);
             const crawl_time = document.getElementById('addCrawlTime').value;
@@ -163,12 +177,24 @@
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ brand, camera_model, min_price, max_price, avg_price, jd_prices, xianyu_prices, crawl_time })
+                body: JSON.stringify({ 
+                    brand, camera_model, min_price, max_price, avg_price, 
+                    description, // 新增：传递简介
+                    jd_prices, xianyu_prices, crawl_time 
+                })
             })
                 .then(r => r.json())
-                .then(res => { alert(res.message); if (res.code === 0) { clearAddForm(); loadCameraList(); } });
+                .then(res => { 
+                    alert(res.message); 
+                    if (res.code === 0) { 
+                        clearAddForm(); 
+                        loadCameraList(); 
+                    } 
+                });
         }
         function clearAddForm() {
+            // 新增：清空简介输入框
+            document.getElementById('addDescription').value = '';
             ['addModel', 'addMinPrice', 'addMaxPrice', 'addAvgPrice', 'addJdPrices', 'addXianyuPrices', 'addCrawlTime'].forEach(id => document.getElementById(id).value = '');
         }
 
@@ -180,6 +206,8 @@
             document.getElementById('editMinPrice').value = item.min_price;
             document.getElementById('editMaxPrice').value = item.max_price;
             document.getElementById('editAvgPrice').value = item.avg_price;
+            // 新增：填充简介
+            document.getElementById('editDescription').value = item.description || '';
             document.getElementById('editJdPrices').value = item.jd_prices.join(',');
             document.getElementById('editXianyuPrices').value = item.xianyu_prices.join(',');
             if (item.crawl_time) {
@@ -198,6 +226,8 @@
             const min_price = document.getElementById('editMinPrice').value;
             const max_price = document.getElementById('editMaxPrice').value;
             const avg_price = document.getElementById('editAvgPrice').value;
+            // 新增：获取简介值
+            const description = document.getElementById('editDescription').value.trim();
             const jd_prices = document.getElementById('editJdPrices').value.split(',').map(Number);
             const xianyu_prices = document.getElementById('editXianyuPrices').value.split(',').map(Number);
             const crawl_time = document.getElementById('editCrawlTime').value;
@@ -206,10 +236,20 @@
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, brand, camera_model, min_price, max_price, avg_price, jd_prices, xianyu_prices, crawl_time })
+                body: JSON.stringify({ 
+                    id, brand, camera_model, min_price, max_price, avg_price, 
+                    description, // 新增：传递简介
+                    jd_prices, xianyu_prices, crawl_time 
+                })
             })
                 .then(r => r.json())
-                .then(res => { alert(res.message); if (res.code === 0) { closeModal(); loadCameraList(); } });
+                .then(res => { 
+                    alert(res.message); 
+                    if (res.code === 0) { 
+                        closeModal(); 
+                        loadCameraList(); 
+                    } 
+                });
         }
 
         /* ========== 删除 ========== */

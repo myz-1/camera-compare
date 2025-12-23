@@ -6,7 +6,7 @@ function handleImgError(imgElement) {
     imgElement.style.objectFit = "cover";
 }
 
-// 型号默认描述（修正富士命名）
+// 型号默认描述
 const MODEL_DESC = {
     // 佳能
     "佳能80D": "佳能80D是一款中端单反相机，搭载2420万像素APS-C画幅CMOS传感器，DIGIC 6图像处理器，支持全像素双核AF，连拍速度7张/秒，翻转触摸屏设计。",
@@ -22,9 +22,9 @@ const MODEL_DESC = {
     "佳能R5": "佳能R5旗舰全画幅微单，4500万像素，8K视频录制，机身防抖，专业级天花板。",
     "佳能850D": "佳能850D入门单反，2410万像素，4K视频，翻转触摸屏，性价比高。",
     // 尼康
-    "尼康Z6": "尼康Z6全画幅微单，2450万像素，EXPEED 6处理器，高感优秀，视频拍照兼顾。",
-    "尼康D850": "尼康D850全画幅专业单反，4575万像素，8K延时，高分辨率，适合风光摄影。",
-    "尼康Z7II": "尼康Z7II全画幅微单，4575万像素，双卡槽，对焦和续航升级，高像素首选。",
+    "尼康z6": "尼康Z6全画幅微单，2450万像素，EXPEED 6处理器，高感优秀，视频拍照兼顾。",
+    "尼康d850": "尼康D850全画幅专业单反，4575万像素，8K延时，高分辨率，适合风光摄影。",
+    "尼康z7II": "尼康Z7II全画幅微单，4575万像素，双卡槽，对焦和续航升级，高像素首选。",
     "尼康Z5": "尼康Z5入门全画幅微单，2432万像素，五轴防抖，性价比高的全画幅入门之选。",
     "尼康Z8": "尼康Z8旗舰微单，4575万像素，8K视频，旗舰级性能，轻量化设计。",
     "尼康D7500": "尼康D7500中端单反，2088万像素，EXPEED 5处理器，51点AF，4K视频。",
@@ -32,9 +32,9 @@ const MODEL_DESC = {
     "尼康Zfc": "尼康Zfc复古微单，2088万像素，APS-C画幅，经典胶片模拟，颜值出众。",
     "尼康Z9": "尼康Z9顶级旗舰微单，4575万像素，8K 60p视频，无机械快门，专业体育摄影首选。",
     // 索尼
-    "索尼A7M4": "索尼A7M4全画幅微单，3300万像素，AI智能对焦，8K 24p视频，性价比旗舰。",
-    "索尼A6400": "索尼A6400 APS-C微单，2420万像素，实时眼部对焦，180°翻转屏，vlog神器。",
-    "索尼A7S3": "索尼A7S3全画幅视频微单，1210万像素，4K 120p视频，专业视频创作者首选。",
+    "索尼a7m4": "索尼A7M4全画幅微单，3300万像素，AI智能对焦，8K 24p视频，性价比旗舰。",
+    "索尼a6400": "索尼A6400 APS-C微单，2420万像素，实时眼部对焦，180°翻转屏，vlog神器。",
+    "索尼a7s3": "索尼A7S3全画幅视频微单，1210万像素，4K 120p视频，专业视频创作者首选。",
     "索尼A7C": "索尼A7C轻量化全画幅微单，2420万像素，小巧便携，兼顾画质与便携。",
     "索尼A7R5": "索尼A7R5高像素旗舰，6100万像素，8K视频，AI对焦，高分辨率摄影首选。",
     "索尼ZV-E10": "索尼ZV-E10视频入门微单，2420万像素，翻转屏，专门优化vlog拍摄。",
@@ -42,9 +42,9 @@ const MODEL_DESC = {
     "索尼FX3": "索尼FX3专业视频机，全画幅，4K 120p视频，电影级画质，适合专业创作。",
     "索尼A1": "索尼A1顶级全画幅旗舰，5010万像素，30张/秒连拍，8K视频，性能天花板。",
     // 富士
-    "富士Xt5": "富士XT5复古微单，4020万像素APS-C传感器，五轴防抖，30种胶片模拟，文艺首选。",
-    "富士Xs20": "富士XS20 APS-C无反相机，2610万像素，五轴防抖，8K视频，复古外观+高性能。",
-    "富士Xt4": "富士XT4复古微单，2610万像素，五轴防抖，胶片模拟，视频拍照双优。",
+    "富士xt5": "富士XT5复古微单，4020万像素APS-C传感器，五轴防抖，30种胶片模拟，文艺首选。",
+    "富士xs20": "富士XS20 APS-C无反相机，2610万像素，五轴防抖，8K视频，复古外观+高性能。",
+    "富士xt4": "富士XT4复古微单，2610万像素，五轴防抖，胶片模拟，视频拍照双优。",
     "富士XT30II": "富士XT30 II入门复古微单，2610万像素，轻量化，胶片模拟丰富，易上手。",
     "富士X100V": "富士X100V复古旁轴，2610万像素，固定镜头，胶片模拟，街拍神器。",
     "富士XS10": "富士XS10中端APS-C微单，2610万像素，五轴防抖，翻转屏，性价比高。",
@@ -91,7 +91,7 @@ function showAlert(msg) {
 function getComparePrice(item, platform) {
     if (platform === 'jd') return item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length;
     if (platform === 'xy') return item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length;
-    // both：原逻辑（京东+咸鱼平均）
+    // both：（京东+咸鱼平均）
     const jdAvg = item.jd_prices.reduce((a, b) => a + b, 0) / item.jd_prices.length;
     const xyAvg = item.xianyu_prices.reduce((a, b) => a + b, 0) / item.xianyu_prices.length;
     return (jdAvg + xyAvg) / 2;
@@ -133,7 +133,8 @@ async function loadDataFromBackend() {
                 const imgPath = `./img/${standardModel}.jpg`;
                 const jdPrices = item.jd_prices || generatePriceList(item.min_price, item.max_price, 3);
                 const xianyuPrices = item.xianyu_prices || generatePriceList(Math.floor(item.min_price * 0.7), Math.floor(item.max_price * 0.8), 3);
-                const desc = item.desc || MODEL_DESC[standardModel] || "暂无产品简介";
+                // 核心适配：优先读取数据库的description，无则用MODEL_DESC兜底
+                const desc = item.description || MODEL_DESC[standardModel] || "暂无产品简介";
                 const refAvg = (jdPrices.reduce((a, b) => a + b, 0) / jdPrices.length + xianyuPrices.reduce((a, b) => a + b, 0) / xianyuPrices.length) / 2;
 
                 return {

@@ -86,8 +86,36 @@ def init_admin_table():
         if conn:
             conn.close()
 
-# 启动时初始化管理员表
+# ========== 初始化相机表的description字段 ==========
+def init_camera_description_field():
+    """给所有相机表新增description字段（首次运行自动执行）"""
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 给每个品牌的表新增description字段
+        for table_name in BRAND_TABLES.values():
+            # 检查字段是否存在
+            cursor.execute(f"SHOW COLUMNS FROM {table_name} LIKE 'description'")
+            if not cursor.fetchone():
+                cursor.execute(f"""
+                    ALTER TABLE {table_name} 
+                    ADD COLUMN description TEXT NULL COMMENT '相机简介' AFTER avg_price
+                """)
+                logger.info(f"✅ 给{table_name}新增description字段成功")
+        
+        conn.commit()
+        logger.info("✅ 所有相机表description字段初始化完成")
+    except Exception as e:
+        logger.error(f"❌ 初始化description字段失败：{str(e)}")
+    finally:
+        if conn:
+            conn.close()
+
+# 启动时初始化管理员表和description字段
 init_admin_table()
+init_camera_description_field()
 
 # ========== 权限验证装饰器 ==========
 def login_required(f):
@@ -104,11 +132,12 @@ def login_required(f):
     return wrapper
 
 def parse_price_data(item: Dict, brand: str) -> Dict:
-    """统一解析价格数据"""
+    """统一解析价格数据（新增description字段）"""
     try:
         item["brand"] = brand
         item["id"] = item.get("id", 0)
         item["camera_model"] = item.get("camera_model", "")
+        item["description"] = item.get("description", "")  # 新增：解析简介字段
         
         # 解析价格数组
         try:
@@ -267,7 +296,7 @@ def admin_logout():
 @app.route('/api/camera/add', methods=['POST'])
 @login_required
 def add_camera():
-    """添加相机数据"""
+    """添加相机数据（新增description字段）"""
     try:
         data = request.get_json() or {}
         brand = data.get('brand', '').strip()
@@ -275,6 +304,7 @@ def add_camera():
         min_price = data.get('min_price', 0.0)
         max_price = data.get('max_price', 0.0)
         avg_price = data.get('avg_price', 0.0)
+        description = data.get('description', '').strip()  # 新增：获取简介
         jd_prices = data.get('jd_prices', [])
         xianyu_prices = data.get('xianyu_prices', [])
         crawl_time = data.get('crawl_time', None)
@@ -302,20 +332,22 @@ def add_camera():
         
         if has_crawl_time and crawl_time:
             sql = f"""
-                INSERT INTO {table_name} (camera_model, min_price, max_price, avg_price, jd_prices, xianyu_prices, crawl_time)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO {table_name} (camera_model, min_price, max_price, avg_price, description, jd_prices, xianyu_prices, crawl_time)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
             params = (
                 camera_model, float(min_price), float(max_price), float(avg_price),
+                description,  # 新增：存入简介
                 json.dumps(jd_prices), json.dumps(xianyu_prices), crawl_time
             )
         else:
             sql = f"""
-                INSERT INTO {table_name} (camera_model, min_price, max_price, avg_price, jd_prices, xianyu_prices)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                INSERT INTO {table_name} (camera_model, min_price, max_price, avg_price, description, jd_prices, xianyu_prices)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             params = (
                 camera_model, float(min_price), float(max_price), float(avg_price),
+                description,  # 新增：存入简介
                 json.dumps(jd_prices), json.dumps(xianyu_prices)
             )
         
@@ -340,7 +372,7 @@ def add_camera():
 @app.route('/api/camera/edit', methods=['POST'])
 @login_required
 def edit_camera():
-    """修改相机数据"""
+    """修改相机数据（新增description字段）"""
     try:
         data = request.get_json() or {}
         brand = data.get('brand', '').strip()
@@ -349,6 +381,7 @@ def edit_camera():
         min_price = data.get('min_price', 0.0)
         max_price = data.get('max_price', 0.0)
         avg_price = data.get('avg_price', 0.0)
+        description = data.get('description', '').strip()  # 新增：获取简介
         jd_prices = data.get('jd_prices', [])
         xianyu_prices = data.get('xianyu_prices', [])
         crawl_time = data.get('crawl_time', None)
@@ -370,17 +403,19 @@ def edit_camera():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 组装更新SQL
+        # 组装更新SQL（新增description字段）
         update_fields = [
             "camera_model = %s",
             "min_price = %s",
             "max_price = %s",
             "avg_price = %s",
+            "description = %s",  # 新增：更新简介
             "jd_prices = %s",
             "xianyu_prices = %s"
         ]
         params = [
             camera_model, float(min_price), float(max_price), float(avg_price),
+            description,  # 新增：传入简介
             json.dumps(jd_prices), json.dumps(xianyu_prices)
         ]
         
@@ -568,4 +603,3 @@ def search_camera() -> Response:
 # ===================== 启动服务 =====================
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
-    
